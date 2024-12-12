@@ -1,12 +1,7 @@
 streamlit
-tensorflow
-opencv-python-headless
-pillow
-joblib
-scikit-learn
 torch
-ultralytics
-numpy    
-pandas       
-Pillow        
-opencv-python 
+numpy
+pandas
+opencv-python
+Pillow
+git+https://github.com/ultralytics/yolov5.git
