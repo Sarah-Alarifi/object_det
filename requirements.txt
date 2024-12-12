@@ -4,4 +4,5 @@ numpy
 pandas
 opencv-python
 Pillow
-git+https://github.com/ultralytics/yolov5.git
+zipfile
+os
