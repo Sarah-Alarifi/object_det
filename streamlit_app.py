@@ -42,7 +42,7 @@ image_file = st.file_uploader("Choose an image file", type=["jpg", "jpeg", "png"
 
 try:
     # Path to the YOLO model file
-    yolo_model_path = "kidney_stone_yolov5_model.pt"  # Replace with your model file path
+    yolo_model_path = "kidney_yolo.pt"  # Replace with your model file path
 
     # Load YOLO model
     model = load_yolo_model(yolo_model_path)
