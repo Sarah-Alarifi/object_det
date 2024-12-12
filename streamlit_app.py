@@ -27,7 +27,7 @@ def detect_kidney_stones(image: Image.Image, model):
 
         # Parse results
         detections = results.pandas().xyxy[0]
-        detections = detections[detections['name'] == 'kidney_stone']  # Filter by class name
+        detections = detections[detections['name'] == 'Tas_Var']  # Filter by class name
 
         return detections
     except Exception as e:
@@ -60,9 +60,7 @@ if image_file:
     image = Image.open(image_file).convert("RGB")
 
     # Button to trigger detection
-    pred_button = st.button("Analyze for Kidney Stones")
-
-    if pred_button:
+    if st.button("Analyze for Kidney Stones"):
         detections = detect_kidney_stones(image, model)
 
         if not detections.empty:
