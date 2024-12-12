@@ -3,18 +3,23 @@ import numpy as np
 import pandas as pd
 from PIL import Image
 import cv2
-import torch  # For loading the YOLO model
+import torch
 
 # Load the YOLO model
+
 def load_yolo_model(model_path: str):
     try:
-        # Attempt to load YOLO model from ultralytics
-        return torch.hub.load('ultralytics/yolov5', 'custom', path=model_path, force_reload=True)
+        import sys
+        sys.path.append('./yolov5')  # Add YOLOv5 to the system path
+        from models.common import DetectMultiBackend
+        model = DetectMultiBackend(model_path)  # Load the model
+        return model
     except Exception as e:
-        st.error(f"Error loading YOLO model: {e}. Make sure 'ultralytics' is installed and the model path is correct.")
+        st.error(f"Error loading local YOLO model: {e}")
         return None
 
 # Perform object detection using YOLO
+
 def detect_kidney_stones(image: Image.Image, model):
     try:
         # Convert PIL image to numpy array
