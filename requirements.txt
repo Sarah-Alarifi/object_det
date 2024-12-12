@@ -1,14 +1,4 @@
 streamlit
-ultralytics
 torch
-torchvision
-opencv-python
-numpy
-pandas
 Pillow
-matplotlib
-PyYAML
-tqdm
-requests
-scipy
-seaborn
+numpy
