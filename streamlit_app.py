@@ -8,9 +8,10 @@ import torch  # For loading the YOLO model
 # Load the YOLO model
 def load_yolo_model(model_path: str):
     try:
+        # Attempt to load YOLO model from ultralytics
         return torch.hub.load('ultralytics/yolov5', 'custom', path=model_path, force_reload=True)
     except Exception as e:
-        st.error(f"Error loading YOLO model: {e}")
+        st.error(f"Error loading YOLO model: {e}. Make sure 'ultralytics' is installed and the model path is correct.")
         return None
 
 # Perform object detection using YOLO
@@ -26,7 +27,7 @@ def detect_kidney_stones(image: Image.Image, model):
         results = model(image_bgr)
 
         # Parse results
-        detections = results.pandas().xyxy[0]
+        detections = results.pandas().xyxy[0]  # Access detection results
         detections = detections[detections['name'] == 'Tas_Var']  # Filter by class name
 
         return detections
@@ -34,29 +35,27 @@ def detect_kidney_stones(image: Image.Image, model):
         st.error(f"Error during detection: {e}")
         return pd.DataFrame()
 
+# Streamlit UI
 st.title("Kidney Stone Detection")
 st.write("Upload an image to detect kidney stones.")
 
 # File uploader for the image
 image_file = st.file_uploader("Choose an image file", type=["jpg", "jpeg", "png"])
 
+# Load the YOLO model
 try:
-    # Path to the YOLO model file
     yolo_model_path = "kidney_yolo.pt"  # Replace with your model file path
-
-    # Load YOLO model
     model = load_yolo_model(yolo_model_path)
     if not model:
         st.stop()
 except FileNotFoundError as e:
-    st.error(f"Missing file: {e}")
+    st.error(f"Missing model file: {e}")
     st.stop()
 
+# Image upload and analysis
 if image_file:
-    # Display uploaded image
     st.image(image_file, caption="Uploaded Image", use_column_width=True)
-    
-    # Convert the file to a PIL image
+
     image = Image.open(image_file).convert("RGB")
 
     # Button to trigger detection
@@ -66,11 +65,11 @@ if image_file:
         if not detections.empty:
             st.success("Kidney stones detected!")
 
-            # Display detections
+            # Display detection results
             for _, row in detections.iterrows():
                 st.write(f"Detected Kidney Stone - Confidence: {row['confidence']:.2f}")
 
-            # Optionally, display bounding boxes on the image
+            # Draw bounding boxes on the image
             image_np = np.array(image)
             for _, row in detections.iterrows():
                 x_min, y_min, x_max, y_max = int(row['xmin']), int(row['ymin']), int(row['xmax']), int(row['ymax'])
