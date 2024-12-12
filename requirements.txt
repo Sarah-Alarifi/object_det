@@ -6,3 +6,7 @@ joblib
 scikit-learn
 torch
 ultralytics
+numpy    
+pandas       
+Pillow        
+opencv-python 
