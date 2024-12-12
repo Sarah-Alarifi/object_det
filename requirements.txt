@@ -1,8 +1,13 @@
 streamlit
 torch
+torchvision
+opencv-python
 numpy
 pandas
-opencv-python
 Pillow
-zipfile
-os
+matplotlib
+PyYAML
+tqdm
+requests
+scipy
+seaborn
