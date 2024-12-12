@@ -3,9 +3,9 @@ import numpy as np
 import pandas as pd
 from PIL import Image
 import cv2
-import zipfile
 import os
-import torch
+import zipfile
+from ultralytics import YOLO  # Use the Ultralytics YOLO library
 
 # Function to extract the yolov5.zip file
 def extract_yolov5(zip_path, extract_to="yolov5"):
@@ -23,19 +23,16 @@ def extract_yolov5(zip_path, extract_to="yolov5"):
 # Function to load the YOLO model
 def load_yolo_model(model_path: str):
     """
-    Load the YOLO model from the specified file path.
+    Load the YOLO model using the Ultralytics library.
 
     Args:
         model_path (str): Path to the YOLO model file.
 
     Returns:
-        model: The loaded YOLO model, or None if loading fails.
+        YOLO: The loaded YOLO model.
     """
     try:
-        import sys
-        sys.path.append('./yolov5')  # Add YOLOv5 to the system path
-        from models.common import DetectMultiBackend
-        model = DetectMultiBackend(model_path)  # Load the model
+        model = YOLO(model_path)  # Load the model
         return model
     except Exception as e:
         st.error(f"Error loading YOLO model: {e}")
@@ -57,11 +54,8 @@ def detect_kidney_stones(image: Image.Image, model):
         # Convert PIL image to numpy array
         image_np = np.array(image)
 
-        # Convert RGB to BGR format for YOLO
-        image_bgr = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
-
         # Perform detection
-        results = model(image_bgr)
+        results = model.predict(image_np, save=False, save_txt=False)
 
         # Parse detection results
         detections = results.pandas().xyxy[0]  # Access detection results
@@ -76,10 +70,11 @@ def detect_kidney_stones(image: Image.Image, model):
 st.title("Kidney Stone Detection")
 st.write("Upload an image to detect kidney stones.")
 
-# Extract yolov5 if it hasn't been extracted yet
+# Ensure YOLOv5 is extracted (if you are still using a ZIP file for YOLOv5, but it's unnecessary with `ultralytics`)
 yolov5_zip_path = "yolov5.zip"  # Path to the ZIP file
 yolov5_dir = "yolov5"  # Extraction directory
-extract_yolov5(yolov5_zip_path, yolov5_dir)
+if os.path.exists(yolov5_zip_path):
+    extract_yolov5(yolov5_zip_path, yolov5_dir)
 
 # Upload the image
 image_file = st.file_uploader("Choose an image file", type=["jpg", "jpeg", "png"])
