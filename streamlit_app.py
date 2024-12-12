@@ -3,7 +3,22 @@ import numpy as np
 import pandas as pd
 from PIL import Image
 import cv2
+import zipfile
+import os
 import torch
+
+# Function to extract the yolov5.zip file
+def extract_yolov5(zip_path, extract_to="yolov5"):
+    """
+    Extract the yolov5 ZIP file to the specified directory.
+
+    Args:
+        zip_path (str): Path to the yolov5 ZIP file.
+        extract_to (str): Directory to extract the files into.
+    """
+    if not os.path.exists(extract_to):
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            zip_ref.extractall(extract_to)
 
 # Function to load the YOLO model
 def load_yolo_model(model_path: str):
@@ -60,6 +75,11 @@ def detect_kidney_stones(image: Image.Image, model):
 # Streamlit UI setup
 st.title("Kidney Stone Detection")
 st.write("Upload an image to detect kidney stones.")
+
+# Extract yolov5 if it hasn't been extracted yet
+yolov5_zip_path = "yolov5.zip"  # Path to the ZIP file
+yolov5_dir = "yolov5"  # Extraction directory
+extract_yolov5(yolov5_zip_path, yolov5_dir)
 
 # Upload the image
 image_file = st.file_uploader("Choose an image file", type=["jpg", "jpeg", "png"])
